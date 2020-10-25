@@ -18,6 +18,7 @@ export default class LearningModel {
     this.lastSituation = -1
     this.lastlastActionTaken = -2
     this.lastActionTaken = -1
+    this.lastPlayType = null;
   }
 
   getModel() {
@@ -39,6 +40,9 @@ export default class LearningModel {
     return -1
   }
 
+  getStorePlayType(){
+    return [this.lastPlayType[0],this.lastPlayType[1]];
+  }
   choosePlayType(state) {
     const indexForState = this.findObjectForState(state)
     if (indexForState < 0) {
@@ -58,6 +62,7 @@ export default class LearningModel {
     this.lastSituation = indexForState
     this.lastlastActionTaken = this.lastActionTaken
     this.lastActionTaken = selectedMove
+    this.lastPlayType = [this.model[indexForState].actions[selectedMove], selectedMove]
     return [this.model[indexForState].actions[selectedMove], selectedMove]
   }
 

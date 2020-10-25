@@ -5,9 +5,6 @@
 <script>
 export default {
   name: "Tour",
-  props: {
-    halloween: Boolean
-  },
   data() {
     return {
       myOptions: {
@@ -21,35 +18,34 @@ export default {
       },
       steps: [
         {
-          target: "#main-game>h4", // We're using document.querySelector() under the hood
-          content: `คุณเล่นเป็น <strong>หน้ายิ้ม</strong>! คุณจะเป็นฝ่ายชนะ ถ้า
-          <ul style="text-align: left;">
-          <li>ตัวหมากตัวใดตัวหนึ่งของคุณไปถึงอีกด้านของกระดาน</li>
-          <li>คู่ต่อสู้ไม่สามารถเคลื่อนไหวได้อีกต่อไป</li>
-          <li>หรือคุณกินตัวหมากของศัตรูจนหมด</li>
-          </ul>`,
+          target: "#main-game>h3", // We're using document.querySelector() under the hood
+          content: `<strong>หน้ายิ้ม!</strong> เป็นฝ่ายเริ่มก่อน
+          โดยให้เดินลงมาข้างล่าง และสามารถคิดการเดินได้เองโดยต้องอยู่ในกฎของเกม Hexapawn`,
           params: {
             placement: "right"
           }
         },
+        //#robot
         {
-          target: "img:first-of-type",
-          content: "วิธีการเดินคือ <strong>ให้ลากแล้วปล่อย</strong>"
+          target: "#robot",
+          content: `ส่วน <strong>เจ้าหุ่นยนต์</strong> ให้เดินขึ้นด้านบน
+          แต่ไม่สามารถเลือกการเดินเองได้`,
+          params: {
+            placement: "top"
+          }
         },
         {
           target: "#main-rules>div>h4",
-          content:
-            "คอมพิวเตอร์จะค้นหารูปแบบการเดินที่หน้าตาเหมือนหน้ากระดานปัจจุบันแล้วสุ่มสีเพื่อเดิน",
+          content:`<strong>เจ้าหุ่นยนต์</strong> ต้องค้นหารูปแบบการเดินด้านขวามือที่หน้าตาเหมือนหน้าตากระดานในปัจจุบัน
+          และสุ่ม 1 สีออกมา <strong>ให้เราใช้เดินตาม</strong>`,
           params: {
             placement: "left"
           }
         },
         {
-          target: ".limit-options-btn",
-          content: `ด้วยปุ่มนี้คุณสามารถเปลี่ยนวิธีการดูรูปแบบการเดินได้ <ul style="text-align: left;">
-          <li>ดูรูปแบบการเดินที่เป็นไปได้เท่านั้น</li>
-          <li>ดูรูปแบบการเดินทั้งหมด</li>
-            </ul>`,
+          target: "#main-rules>div>h4",
+          content:
+            "และถ้าการเดินแบบไหนที่ทำให้ <strong>เจ้าหุ่นยนต์</strong> แพ้ การเดินแบบนั้นจะถูกกำจัดทิ้งเพื่อจะได้ไม่ทำแบบเดิมอีก!",
           params: {
             placement: "bottom"
           }

@@ -22,7 +22,7 @@
           orient="auto"
           markerUnits="strokeWidth"
         >
-          <path d="M0,0 L0,4 L5,2 z" fill="#0f0" />
+          <path d="M0,0 L0,4 L5,2 z" fill="#008000" />
         </marker>
         <marker
           id="arrow-blue"
@@ -66,13 +66,13 @@
           :y="dimension/3 * (Math.floor(index / 3))"
           :width="dimension/3"
           :height="dimension/3"
-          stroke="lightgray"
+          stroke="gray"
           style="fill:rgb(255,255,255)"
           stroke-width="1"
         />
 
         <image
-          v-if="occupation === 1 && !halloween"
+          v-if="occupation === 1"
           :width="dimension/3"
           :height="dimension/3"
           :x="dimension/3 * (index % 3)"
@@ -81,12 +81,12 @@
         />
 
         <image
-          v-if="occupation === 2 && !halloween"
+          v-if="occupation === 2"
           :width="dimension/3"
           :height="dimension/3"
           :x="dimension/3 * (index % 3)"
           :y="dimension/3 * (Math.floor(index / 3))"
-          xlink:href="../assets/computer.svg"
+          xlink:href="../assets/robot.svg"
         />
       </g>
       <g v-for="(action, index) in actions" :key="index">
@@ -110,15 +110,14 @@ export default {
   props: {
     state: Array,
     dimension: { type: Number, default: 180 },
-    actions: Array,
-    halloween: Boolean
+    actions: Array
   },
   data: function() {
     return {
       colors: [
         { name: "url(#arrow-blue)", hex: "#00f", fill: "blue" },
         { name: "url(#arrow-red)", hex: "#f00", fill: "red" },
-        { name: "url(#arrow-green)", hex: "#0f0", fill: "green" },
+        { name: "url(#arrow-green)", hex: "#008000", fill: "green" },
         { name: "url(#arrow-yellow)", hex: "#ffa500", fill: "orange" },
         { name: "url(#arrow-purple)", hex: "#80f", fill: "purple" }
       ]

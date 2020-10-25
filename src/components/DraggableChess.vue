@@ -13,20 +13,20 @@
     >
       <div v-bind:class="{outline: highlights[index]}" class="field-slot" v-if="occupation === 0">
         <!-- field is empty -->
-        <img v-bind:id="index" src="../assets/white.svg" alt="empty" width="100%" />
+        <img v-bind:id="index" src="../assets/white.svg" alt="empty" width="80%" />
       </div>
-      <div class="field-slot monkey" v-if="occupation === 1">
+      <div v-bind:class="{'outline': highlights[index]}" class="field-slot human" v-if="occupation === 1">
         <!-- player is occupying field -->
 
-        <img v-bind:id="index" src="../assets/human.svg" alt="human" width="100%" />
+        <img v-bind:id="index" src="../assets/human.svg" alt="human" width="80%" />
       </div>
       <div
         v-bind:class="{'outline': highlights[index]}"
-        class="field-slot croco"
+        class="field-slot robot"
         v-if="occupation === 2"
       >
         <!-- computer is occupying field -->
-        <img v-bind:id="index" src="../assets/computer.svg" alt="computer" width="100%" />
+        <img v-bind:id="index" src="../assets/robot.svg" alt="robot" width="80%" />
       </div>
     </div>
   </div>
@@ -44,7 +44,8 @@ export default {
   components: {},
   props: {
     state: Array,
-    halloween: Boolean
+    Model: Object ,
+    Doit: Boolean 
   },
   data() {
     return {
@@ -56,6 +57,7 @@ export default {
   },
   methods: {
     handleMove: function(e) {
+      // console.log("handleMove")
       if (!this.playerIsAllowedToMove) {
         return;
       }
@@ -79,10 +81,31 @@ export default {
       }
     },
     handleMoving: function(e) {
-      //console.log(e);
+      //// console.log(e);
     },
     endHandler: function(e) {
+      // console.log("endHandler")
       if (!this.playerIsAllowedToMove) {
+        // var touchEndedHere = e.changedTouches[0];
+
+        // const fields = this.$refs.fieldslot;
+
+        // for (let i = 0; i < fields.length; i++) {
+        //   const boundingRect = fields[i].getBoundingClientRect();
+        //   if (
+        //     touchEndedHere.clientX > boundingRect.left &&
+        //     touchEndedHere.clientX < boundingRect.right &&
+        //     touchEndedHere.clientY > boundingRect.top &&
+        //     touchEndedHere.clientY < boundingRect.bottom
+        //   ) {
+        //     const from = this.currentlyDragging.id;
+        //     const to = i;
+        //     this.performActionBot(from, to);
+        //   }
+        // }
+        // //remove all highlights
+        // this.highlights.fill(false);
+        // this.$forceUpdate();
         return;
       }
       var touchEndedHere = e.changedTouches[0];
@@ -107,20 +130,35 @@ export default {
       this.$forceUpdate();
     },
     handleDrop: function(e) {
+      // console.log("handleDrop")
       if (!this.playerIsAllowedToMove) {
+        if(this.Doit){
+          return;
+        }
+        //remove all highlights
+        this.highlights.fill(false);
+        this.$forceUpdate();
+        // handle movement
+        //// console.log("handleDrop", this.currentlyDragging, e.target);
+        const from = this.currentlyDragging.id;
+        const to = e.target.id;
+        this.performActionBot(from, to);
         return;
       }
       //remove all highlights
       this.highlights.fill(false);
       this.$forceUpdate();
       // handle movement
-      //console.log("handleDrop", this.currentlyDragging, e.target);
+      //// console.log("handleDrop", this.currentlyDragging, e.target);
       const from = this.currentlyDragging.id;
       const to = e.target.id;
       this.performAction(from, to);
     },
     performAction(from, to) {
+      // console.log("performAction")
+      
       const placeholder = this.currentState[from];
+      
       const possibleMoves = calculatePossibleMoves(this.currentState, 1);
       const moveTried = [from, to];
       if (arrayContainsArray(possibleMoves, moveTried)) {
@@ -131,8 +169,48 @@ export default {
         this.$emit("new-state", this.currentState);
       }
     },
+    performActionBot(from, to) {
+      // console.log("performActionBot")
+      
+      const placeholder = this.currentState[from];
+
+
+      //const possibleMoves = calculatePossibleMoves(this.currentState, 2);
+      const botMoves = this.Model.getStorePlayType()
+      const fixedMoveBot = [[botMoves[0][0],botMoves[0][1]]]
+      const moveTried = [from, to];
+      // if (arrayContainsArray(possibleMoves, moveTried)) {
+      if (arrayContainsArray(fixedMoveBot, moveTried)) {
+        this.currentState[this.currentlyDragging.id] = 0;
+        this.currentState[to] = placeholder;
+        this.$forceUpdate();
+        this.playerIsAllowedToMove = true;
+        this.$emit("new-state", this.currentState);
+      }
+    },
     handleDrag: function(e) {
+      console.log("handleDrag")
       if (!this.playerIsAllowedToMove) {
+        if(this.Doit){
+          return;
+        }
+        this.currentlyDragging = e.srcElement;
+        if (this.currentState[this.currentlyDragging.id] == 2) {
+          // it belongs to a human, show where to place it
+          // const possibleMoves = calculatePossibleMoves(this.currentState, 2);
+          const botMoves = this.Model.getStorePlayType()
+          const fixedMoveBot = [[botMoves[0][0],botMoves[0][1]]]
+          let possibleDestinations = [];
+          for (let i = 0; i < fixedMoveBot.length; i++) {
+            if (fixedMoveBot[i][0] == this.currentlyDragging.id) {
+              possibleDestinations.push(fixedMoveBot[i][1]);
+            }
+          }
+          for (let i = 0; i < possibleDestinations.length; i++) {
+            this.highlights[possibleDestinations[i]] = true;
+          }
+          this.$forceUpdate();
+        }
         return;
       }
       this.currentlyDragging = e.srcElement;
@@ -172,17 +250,17 @@ export default {
 }
 
 .field > div {
-  border: 1px solid lightgray;
+  border: 1px solid black;
 }
 
 .outline {
   border: 5px solid orangered;
 }
 
-.monkey {
+.human {
   background-color: #56a8c9;
 }
-.croco {
+.robot {
   background-color: #a0a0a0;
 }
 </style>

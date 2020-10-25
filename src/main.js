@@ -4,6 +4,7 @@ import DragAndDrop from 'vue-drag-and-drop'
 import VueTour from 'vue-tour'
 import Vue2TouchEvents from 'vue2-touch-events'
 import VueAnalytics from 'vue-analytics'
+import router from './router'
 
 require('vue-tour/dist/vue-tour.css')
 
@@ -17,5 +18,6 @@ Vue.use(Vue2TouchEvents)
 
 
 new Vue({
+  router,
   render: h => h(App)
 }).$mount('#app')
