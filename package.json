@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint",
     "deploy": "gh-pages -d dist"
   },
-  "Homepage": "https://oue1998.github.io/SweetLearning",
+  "Homepage": "https://github.com/oue1998/SweetLearning.git",
   "dependencies": {
     "core-js": "^2.6.5",
     "gh-pages": "^3.1.0",
