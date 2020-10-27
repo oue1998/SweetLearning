@@ -1,24 +1,41 @@
 <template>
   <div id="game">
-    <h1>The Sweet Learning Computer</h1>
-
-    <div id="main-view">
-      <div id="main-game">
-        <h3 class="left-text">
+    <!-- <h1>The Sweet Learning Computer</h1> -->
+     <button class="move" v-if="active == 1 && bot_lose == false" style="font-size : 35px">
           <img
-            v-if="active == 1"
             src="../assets/human.svg"
             alt="human"
-            width="15%"
-          />
-          <img
-            v-if="active == 2"
-            src="../assets/robot.svg"
-            alt="human"
-            width="15%"
+            width="25%"
           />
           เดิน
-        </h3>
+        </button>
+        <button class="move" v-if="active == 2 && Doit == true"> 
+          <img
+            src="../assets/robot.svg"
+            alt="robot"
+            width="5%"
+          />
+          เดิน โดยคลิกรูปแบบการเดินด้านขวาที่ตรงกับปัจจุบันเพื่อสุ่มสีลูกศร
+        </button>
+        <button class="move" v-if="active == 2 && Doit == false">
+          <img
+            src="../assets/robot.svg"
+            alt="robot"
+            width="10%"
+          />
+          เดิน ตามทางสีลูกศรที่สุ่มได้
+          </button>
+          <button class="move" v-if="bot_lose">
+            <img
+            src="../assets/robot.svg"
+            alt="robot"
+            width="7%"
+          />
+            เจ้าหุ่นยนต์แพ้จึงต้องลบการเดินล่าสุดที่ทำให้แพ้ออก
+          </button>
+    <div id="main-view">
+      <div id="main-game">
+        <h3 class="left-text"></h3>
         <button v-if="displayWin == 1" class="win" @click="restart">
           <svg width="50" height="50" viewBox="0 0 50 50">
             <image width="50" height="50" xlink:href="../assets/human.svg" />
@@ -133,6 +150,7 @@
             class="ruleset"
             v-bind:class="{ outlinerule: index == lastMove.length-1 && bot_lose }"
           >
+          <!-- รูปแบบการเดินที่ถูกเลือก -->
             <PossibleActions
               v-bind:state="model.state"
               v-bind:actions="model.actions"
@@ -156,6 +174,10 @@
     </div>
     <Tour />
     <!-- <div class="blink_me"></div> -->
+    <div class="small">
+      <line-chart :chart-data="datacollection"></line-chart>
+    <button @click="fillData()">Randomize</button>
+    </div>
   </div>
 </template>
 
@@ -164,6 +186,7 @@ const resetToState = [1, 1, 1, 0, 0, 0, 2, 2, 2];
 import DraggableChess from "../components/DraggableChess.vue";
 import PossibleActions from "../components/PossibleActions.vue";
 import Tour from "../components/Tour.vue";
+import LineChart from '../utils/LineChart'
 import {
   performMove,
   checkIfPlayerWins,
@@ -179,6 +202,7 @@ export default {
     DraggableChess,
     PossibleActions,
     Tour,
+    LineChart,
   },
   data: function() {
     return {
@@ -200,6 +224,8 @@ export default {
       bot_lose : false,
       lose_text : "",
       Doit : true,
+      datacollection: null,
+      
     };
   },
   methods: {
@@ -332,6 +358,29 @@ export default {
       }
       this.active = this.active == this.player ? this.computer : this.player;
     },
+    fillData () {
+        this.datacollection = {
+          labels: [0,1,2,3,4,5],
+          datasets: [
+            {
+              label: 'หน้ายิ้ม',
+              borderColor: '#56a8c9',
+              
+              borderWidth: 5,
+              data: [this.getRandomInt(), null, this.getRandomInt(), this.getRandomInt(), null,null]
+            }, {
+              label: 'เจ้าหุ่นยนต์',
+              borderColor: '#a0a0a0',
+              
+              borderWidth: 5,
+              data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+            }
+          ]
+        }
+      },
+      getRandomInt () {
+        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+      },
   },
   mounted: function() {
     let uri = window.location.search.substring(1);
@@ -340,6 +389,8 @@ export default {
       this.timeForPC = params.get("time");
     }
     this.updateSelection();
+    this.fillData();
+
   },
 };
 </script>
@@ -417,15 +468,25 @@ h3{
   width: 75%;
 }
 
+.move{
+  text-align: center;
+  background-color: #fdf678;
+  border: #fdf678;
+  font-size: 30px;
+  padding: 10px;
+  margin: 10px;
+}
+
 .win {
   display: flex;
   align-items: center;
-  width: 46vh;
-  height: 70px;
+  justify-content: center;
+  height: auto;
   background-color: #92d14f;
   border: black;
-  margin-left: 13vh;
-  margin-bottom: 5px;
+  margin-left: 5vw;
+  margin-right: 3vw;
+  margin-bottom: 3px;
 }
 
 .win > svg {
@@ -473,4 +534,9 @@ input:checked + .slider:before {
   justify-content: space-evenly;
   margin-bottom: 1em;
 }
+
+.small {
+    max-width: 600px;
+    margin:  150px auto;
+  }
 </style>
