@@ -161,22 +161,13 @@
               :Doit="false"
             />
           </div>
-          <div
-            v-if="bot_lose"
-          >
-            <!-- {{lose_text}} -->
-            <h4>เจ้าหุ่นยนต์แพ้จึงต้องลบการเดินล่าสุดที่ทำให้แพ้ออก</h4>
-          </div>
         </div>
       </div>
-
-      
     </div>
     <Tour />
     <!-- <div class="blink_me"></div> -->
     <div class="small">
-      <line-chart :chart-data="datacollection"></line-chart>
-    <button @click="fillData()">Randomize</button>
+      <line-chart :chart-data="datacollection" :options="op"></line-chart>
     </div>
   </div>
 </template>
@@ -225,6 +216,27 @@ export default {
       lose_text : "",
       Doit : true,
       datacollection: null,
+      op:{
+      scales: {
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'จำนวนครั้งที่เล่น'
+          }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'แต้มที่ได้'
+          }
+        }]
+      }
+    },
+      lebal:[0,'','','','',5,'','','','',10],
+      humandata:[],
+      botdata:[],
+      turn:[],
+      t:1,
       
     };
   },
@@ -244,20 +256,21 @@ export default {
     checkWinner: function(newState, who) {
       if (checkIfPlayerWins(newState, who)) {
         const self = this;
-
         if (who === this.player) {
           this.displayWin = 1;
-          // setTimeout(function() {
-            // self.displayWin = 0;
-            self.winsPlayer++;
-          // }, this.timeForPC / 2);
+          self.winsPlayer++;
+          console.log(this.humandata,'humandata')
+
         } else {
           this.displayWin = 2;
-          // setTimeout(function() {
-            // self.displayWin = 0;
-            self.winsPC++;
-          // }, this.timeForPC / 2);
+          self.winsPC++;
+          console.log(this.botdata,'botdata')
         }
+        this.t = this.t + 1;
+        this.turn.push(this.t);
+        this.humandata.push(this.winsPlayer);
+        this.botdata.push(this.winsPC);
+        this.fillData();
         return true;
       }
       return false;
@@ -293,22 +306,12 @@ export default {
           const self = this;
           
      
-          // setTimeout(function() {
-          //   self.state = [...resetToState];
-          //   self.updateSelection();
-          // }, this.timeForPC / 2);
         } else if (this.checkWinner(newState, this.player)) {
           console.log("human won!!!");
           this.computerModel.humanWon();
           this.forceUpdate++;
           const self = this;
-
-           this.bot_lose = true;
-           this.lose_text = "ผมแพ้แล้ว จะลบละนะ"
-          // setTimeout(function() {
-          //   self.state = [...resetToState];
-          //   self.updateSelection();
-          // }, this.timeForPC / 2);
+          this.bot_lose = true;
         }
       }
       if (this.active == 1) {
@@ -320,20 +323,13 @@ export default {
           this.forceUpdate++;
           const self = this;
            this.bot_lose = true;
-           this.lose_text = "ผมแพ้แล้ว จะลบละนะ"
-          // setTimeout(function() {
-          //   self.state = [...resetToState];
-          //   self.updateSelection();
-          // }, this.timeForPC / 2);
+
         } else if (this.checkWinner(newState, this.computer)) {
           console.log("wow bot win!!!!!");
           this.computerModel.computerWon();
           this.forceUpdate++;
           const self = this;
-          // setTimeout(function() {
-          //   self.state = [...resetToState];
-          //   self.updateSelection();
-          // }, this.timeForPC / 2);
+
         }
 
         // ท่อนหลังจากนี้ จะเป็นการจัดเก็บว่าบอทจะเดินอย่างไรต่อไป
@@ -360,26 +356,23 @@ export default {
     },
     fillData () {
         this.datacollection = {
-          labels: [0,1,2,3,4,5],
+          labels: this.turn,
           datasets: [
             {
               label: 'หน้ายิ้ม',
               borderColor: '#56a8c9',
               
               borderWidth: 5,
-              data: [this.getRandomInt(), null, this.getRandomInt(), this.getRandomInt(), null,null]
+              data:this.humandata,
             }, {
               label: 'เจ้าหุ่นยนต์',
               borderColor: '#a0a0a0',
               
               borderWidth: 5,
-              data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
+              data:this.botdata,
             }
           ]
         }
-      },
-      getRandomInt () {
-        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
       },
   },
   mounted: function() {
@@ -390,6 +383,7 @@ export default {
     }
     this.updateSelection();
     this.fillData();
+    this.turn.push(this.t);
 
   },
 };
