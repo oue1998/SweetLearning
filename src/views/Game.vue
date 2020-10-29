@@ -1,7 +1,8 @@
 <template>
   <div id="game">
     <!-- <h1>The Sweet Learning Computer</h1> -->
-     <button class="move" v-if="active == 1 && bot_lose == false" style="font-size : 35px">
+     <button class="move" v-if="active == 1 && bot_lose == false && displayWin == 0" style="font-size : 35px">
+          ตา
           <img
             src="../assets/human.svg"
             alt="human"
@@ -10,6 +11,7 @@
           เดิน
         </button>
         <button class="move" v-if="active == 2 && Doit == true"> 
+          ตา
           <img
             src="../assets/robot.svg"
             alt="robot"
@@ -18,6 +20,7 @@
           เดิน โดยคลิกรูปแบบการเดินด้านขวาที่ตรงกับปัจจุบันเพื่อสุ่มสีลูกศร
         </button>
         <button class="move" v-if="active == 2 && Doit == false">
+          ตา
           <img
             src="../assets/robot.svg"
             alt="robot"
@@ -25,33 +28,30 @@
           />
           เดิน ตามทางสีลูกศรที่สุ่มได้
           </button>
-          <button class="move" v-if="bot_lose">
+          <button v-if="displayWin == 1" class="move">
             <img
+            src="../assets/human.svg"
+            alt="robot"
+            width="25%"
+          />
+          ชนะ
+        </button>
+        <button v-if="displayWin == 2" class="move">
+          <img
             src="../assets/robot.svg"
             alt="robot"
-            width="7%"
+            width="30%"
           />
-            เจ้าหุ่นยนต์แพ้จึงต้องลบการเดินล่าสุดที่ทำให้แพ้ออก
-          </button>
+          ชนะ
+        </button>
     <div id="main-view">
       <div id="main-game">
         <h3 class="left-text"></h3>
         <button v-if="displayWin == 1" class="win" @click="restart">
-          <svg width="50" height="50" viewBox="0 0 50 50">
-            <image width="50" height="50" xlink:href="../assets/human.svg" />
-          </svg>
-          <p>ชนะ / เล่นอีกครั้ง</p>
+          <p>เล่นอีกครั้ง</p>
         </button>
         <button v-if="displayWin == 2" class="win" @click="restart">
-          <svg width="50" height="50" viewBox="0 0 50 50">
-            <image
-              id="robot"
-              width="50"
-              height="50"
-              xlink:href="../assets/robot.svg"
-            />
-          </svg>
-          <p>ชนะ / เล่นอีกครั้ง</p>
+          <p>เล่นอีกครั้ง</p>
         </button>
         <DraggableChess
           :state="this.state"
@@ -59,7 +59,6 @@
           v-bind:Doit="Doit"
           @new-state="handleNewState"
         />
-        <!-- <button class="re" v-if="displayWin > 0" @click="restart">RESTART</button> -->
         <h4 class="left-text">คะแนน</h4>
         <div class="points">
           <div>
@@ -77,9 +76,6 @@
                 />
               </svg>
             </div>
-            <!-- <div v-if="displayWin == 1" style="float: right; color: green;">
-              +1
-            </div> -->
             <div style="width: 50px; margin: 0 auto;">{{ winsPlayer }}</div>
           </div>
           <div>
@@ -98,18 +94,13 @@
                 />
               </svg>
             </div>
-            <!-- <div v-if="displayWin == 2" style="float: right; color: red;">
-              +1
-            </div> -->
             <div style="width: 50px; margin: 0 auto;">{{ winsPC }}</div>
           </div>    
         </div>
       </div>
-      <!-- Da meistens 16:9 Monitore verwendet werden, sollte das vermutlich rechts vom Spielfeld angezeigt werden -->
       <div id="main-rules">
         <div class="row">
-          <h4 class="left-text">รูปแบบการเดินของเจ้าหุ่นยนต์</h4>
-          <!-- Rounded switch -->
+          <h4>รูปแบบการเดินของเจ้าหุ่นยนต์</h4>
         </div>
 
         <div class="rulesets">
@@ -120,9 +111,7 @@
             v-bind:class="{ outlinerule: !Doit && compareStates(model.state, state) }"
           >
             <PossibleActions
-              v-if="
-                !filter || checkIfStateIsContained(filteredStates, model.state)
-              "
+              v-if="!filter || checkIfStateIsContained(filteredStates, model.state) && active == 2"
               v-bind:state="model.state"
               v-bind:actions="model.actions"
               v-bind:sweets="model.sweets"
@@ -135,12 +124,8 @@
             />
           </div>
         </div>
-
-        
         <div class="row">
-          <br>
-          <h4 class="left-text">รูปแบบการเดินที่ เจ้าหุ่นยนต์ ใช้เดิน</h4>
-          <!-- Rounded switch -->
+          <h4>รูปแบบการเดินที่ เจ้าหุ่นยนต์ ใช้เดิน</h4>
         </div>
 
         <div class="rulesets">
@@ -162,6 +147,14 @@
             />
           </div>
         </div>
+        <button class="move" v-if="bot_lose">
+            <img
+            src="../assets/robot.svg"
+            alt="robot"
+            width="7%"
+          />
+            เจ้าหุ่นยนต์แพ้จึงต้องลบการเดินล่าสุดที่ทำให้แพ้ออก
+          </button>
       </div>
     </div>
     <Tour />
@@ -361,13 +354,13 @@ export default {
             {
               label: 'หน้ายิ้ม',
               borderColor: '#56a8c9',
-              
+              backgroundColor:'#fff',
               borderWidth: 5,
               data:this.humandata,
             }, {
               label: 'เจ้าหุ่นยนต์',
               borderColor: '#a0a0a0',
-              
+              backgroundColor:'#fff',
               borderWidth: 5,
               data:this.botdata,
             }
@@ -478,9 +471,10 @@ h3{
   height: auto;
   background-color: #92d14f;
   border: black;
-  margin-left: 5vw;
-  margin-right: 3vw;
+  margin-left: 11vw;
+  margin-right: 11vw;
   margin-bottom: 3px;
+  padding: 5px;
 }
 
 .win > svg {
@@ -489,7 +483,7 @@ h3{
 }
 
 .win > p {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
 }
 
@@ -531,6 +525,6 @@ input:checked + .slider:before {
 
 .small {
     max-width: 600px;
-    margin:  150px auto;
+    margin:  50px auto;
   }
 </style>
