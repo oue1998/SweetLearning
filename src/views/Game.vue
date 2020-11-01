@@ -230,6 +230,7 @@ export default {
       botdata:[],
       turn:[],
       t:1,
+      move:true,
       
     };
   },
@@ -245,6 +246,7 @@ export default {
       this.bot_lose = false;
       this.lose_text = ""
       this.Doit = true;
+      this.move = true;
     },
     checkWinner: function(newState, who) {
       if (checkIfPlayerWins(newState, who)) {
@@ -278,7 +280,10 @@ export default {
     },
     updateLastMove: function(thisObject) {
       console.log("updateLastMove")
-      this.lastMove.push(thisObject);
+      if(this.move == true){
+        this.lastMove.push(thisObject);
+        this.move = false;
+      }
       console.log(this.lastMove,"this is lastMove")
     },
     checkBeforeMove: function() {
@@ -288,7 +293,8 @@ export default {
       this.$forceUpdate();
       console.log(this.active);
       if (this.active == 2) {
-        console.log("bot move");
+        this.move = true;
+        console.log(this.move,"bot move");
         this.chosenPlayType = -1;
         this.state = newState;
         this.updateSelection();
