@@ -119,6 +119,7 @@
               v-bind:currentState="compareStates(model.state, state)"
               v-bind:chosenPlayType="chosenPlayType"
               v-bind:Doit="Doit"
+              v-bind:blink="blink"
               @update_lastmove="updateLastMove"
               @check_beforemove="checkBeforeMove"
             />
@@ -137,13 +138,15 @@
           >
           <!-- รูปแบบการเดินที่ถูกเลือก -->
             <PossibleActions
+            
               v-bind:state="model.state"
               v-bind:actions="model.actions"
               v-bind:sweets="model.sweets"
               v-bind:forceUpdate="model.forceUpdate"
               v-bind:currentState="model.currentState"
               v-bind:chosenPlayType="model.chosenPlayType"
-              :Doit="false"
+              :Doit="Show_hist"
+              :blink="false"
             />
           </div>
         </div>
@@ -225,12 +228,12 @@ export default {
         }]
       }
     },
-      lebal:[0,'','','','',5,'','','','',10],
       humandata:[],
       botdata:[],
       turn:[],
       t:1,
       move:true,
+      blink:true,
       
     };
   },
@@ -247,6 +250,7 @@ export default {
       this.lose_text = ""
       this.Doit = true;
       this.move = true;
+      this.blink = true;
     },
     checkWinner: function(newState, who) {
       if (checkIfPlayerWins(newState, who)) {
@@ -281,19 +285,27 @@ export default {
     updateLastMove: function(thisObject) {
       console.log("updateLastMove")
       if(this.move == true){
-        this.lastMove.push(thisObject);
         this.move = false;
       }
+      let self = this;
+      setTimeout(this.blinkFunc, 3000);
+      setTimeout(function(){self.lastMove.push(thisObject)}, 3000);
       console.log(this.lastMove,"this is lastMove")
+    },
+    blinkFunc(){
+      this.blink = false;
+      console.log(this.blink,"this.blink")
     },
     checkBeforeMove: function() {
       this.Doit = false;
+      console.log(this.Doit,"this.Doit")
     },
     handleNewState: function(newState) {
       this.$forceUpdate();
       console.log(this.active);
       if (this.active == 2) {
         this.move = true;
+        this.blink = true;
         console.log(this.move,"bot move");
         this.chosenPlayType = -1;
         this.state = newState;

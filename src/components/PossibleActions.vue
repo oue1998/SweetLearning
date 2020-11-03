@@ -10,7 +10,7 @@
       <svg :width="dimension" :height="dimension">
         <g v-for="(sweet, index) in sweets" :key="index">
           <g v-for="i in sweet" :key="i">
-            <defs>
+            <defs> 
               <marker
                 id="arrow-red"
                 markerWidth="10"
@@ -67,8 +67,18 @@
                 <path d="M0,0 L0,4 L5,2 z" fill="#80f" />
               </marker>
             </defs>
-              <line 
-              v-if="!Doit? ((currentState == false) || (currentState && index == chosenPlayType)) :true"
+            <!-- <line
+              v-if="!Doit? ((currentState == false) || (currentState && index == chosenPlayType)):true"
+                :x1="dimension/4 * index + 10"
+                :y1="70"
+                :x2="dimension/4 * index + 10"
+                :y2="40"
+                :stroke="colors[index].hex"
+                stroke-width="4"
+                :marker-end="colors[index].name"
+              /> -->
+              <line
+              v-if="!Doit? ((currentState == false)):true"
                 :x1="dimension/4 * index + 10"
                 :y1="70"
                 :x2="dimension/4 * index + 10"
@@ -77,22 +87,59 @@
                 stroke-width="4"
                 :marker-end="colors[index].name"
               />
-            <!-- <animateMotion
-              v-if="currentState && index != chosenPlayType"
-            /> -->
+              <line class="blink_me"
+              v-if="(Doit == false) && (blink == true)"
+                :x1="dimension/4 * index + 10"
+                :y1="70"
+                :x2="dimension/4 * index + 10"
+                :y2="40"
+                :stroke="colors[index].hex"
+                stroke-width="4"
+                :marker-end="colors[index].name"
+              />
+              <line 
+              v-if="(currentState && index == chosenPlayType) && (blink == false)"
+                :x1="dimension/4 * index + 10"
+                :y1="70"
+                :x2="dimension/4 * index + 10"
+                :y2="40"
+                :stroke="colors[index].hex"
+                stroke-width="4"
+                :marker-end="colors[index].name"
+              />
+              <!-- <line
+              v-if="!Doit? ((currentState == false) ||(currentState && index == chosenPlayType)):false"
+                :x1="dimension/4 * index + 10"
+                :y1="70"
+                :x2="dimension/4 * index + 10"
+                :y2="40"
+                :stroke="colors[index].hex"
+                stroke-width="4"
+                :marker-end="colors[index].name"
+              /> -->
+
+              <!-- v-if="currentState && index != chosenPlayType" -->
             <!-- dur="0.3s" -->
-            <animateMotion
-              v-if="currentState && index == chosenPlayType"
+            <!-- <animateMotion
+              v-if="((Doit == false) && (currentState && index == chosenPlayType))"
               path="M 0 0 V -10 V -20 Z"
               begin="0s"
+              dur="0.3s"
               repeatCount="indefinite"
-            />
+            /> -->
+            <!-- <animateMotion
+              v-if="((currentState && index == chosenPlayType))"
+              path="M 0 0 V -10 V -20 Z"
+              begin="0s"
+              dur="0.3s"
+              repeatCount="indefinite"
+            /> -->
           </g>
         </g>
       </svg>
-      
     </div>
     <div style="display:none;">{{ forceUpdate }}</div>
+    <!-- <div class="pass"></div> -->
     </div>
     </div>
 </template>
@@ -112,6 +159,7 @@ export default {
     currentState: Boolean,
     chosenPlayType: Number,
     Doit: Boolean,
+    blink: Boolean,
   },
   data: function() {
     return {
@@ -124,7 +172,8 @@ export default {
       ],
       dimension: 90,
       currentSweets: this.sweets,
-      forceUpdateHelper: 1
+      forceUpdateHelper: 1,
+      
     };
   },
   watch: {
@@ -148,15 +197,34 @@ export default {
           }
         })
       }
-    }
+    },
+
+
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.pass{
+border: solid;
+animation-name:myfirst;
+animation-duration:3s;
+animation-delay:0s;
+animation-iteration-count:2;
+animation-play-state:running;
+
+}
+
+@keyframes myfirst
+{0%   {border-color:blue;}
+25%  {border-color:red;}
+50%  {border-color:green;}
+75%  {border-color:orange;}
+100%  {border-color:purple;}}
+
 .blink_me {
-  animation: blinker 1s linear infinite;
+  animation: blinker 1s linear 5;
 }
 
 @keyframes blinker {
