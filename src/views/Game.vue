@@ -163,6 +163,9 @@
     <Tour />
     <!-- <div class="blink_me"></div> -->
     <div class="small">
+
+          <h1>สถิติการแข่ง</h1>
+
       <line-chart :chart-data="datacollection" :options="op"></line-chart>
     </div>
   </div>

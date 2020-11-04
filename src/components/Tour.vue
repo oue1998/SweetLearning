@@ -20,26 +20,26 @@ export default {
         {
           target: "#main-game>h3", // We're using document.querySelector() under the hood
           content: `<strong>หน้ายิ้ม!</strong> เป็นฝ่ายเริ่มก่อน
-          โดยให้เดินลงมาข้างล่าง และสามารถคิดการเดินได้เองโดยต้องอยู่ในกฎของเกม Hexapawn`,
+          โดยให้เดินลงมาข้างล่าง และสามารถคิดการเดินได้เองโดยต้องอยู่ในกฎของเกม`,
           params: {
             placement: "right"
           }
         },
         //#robot
         {
-          target: "#robot",
+          target: "#main-game>h3",
           content: `ส่วน <strong>เจ้าหุ่นยนต์</strong> ให้เดินขึ้นด้านบน
           แต่ไม่สามารถเลือกการเดินเองได้`,
           params: {
-            placement: "top"
+            placement: "bottom"
           }
         },
         {
           target: "#main-rules>div>h4",
           content:`<strong>เจ้าหุ่นยนต์</strong> ต้องค้นหารูปแบบการเดินด้านขวามือที่หน้าตาเหมือนหน้าตากระดานในปัจจุบัน
-          และสุ่ม 1 สีออกมา <strong>ให้เราใช้เดินตาม</strong>`,
+          และคลิกเพื่อสุ่มสีออกมา <strong>ใช้เดินตาม</strong>`,
           params: {
-            placement: "left"
+            placement: "right"
           }
         },
         {
