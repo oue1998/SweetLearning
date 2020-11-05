@@ -288,11 +288,11 @@ export default {
     updateLastMove: function(thisObject) {
       console.log("updateLastMove")
       if(this.move == true){
+        setTimeout(function(){self.lastMove.push(thisObject)}, 3000);
         this.move = false;
       }
       let self = this;
       setTimeout(this.blinkFunc, 3000);
-      setTimeout(function(){self.lastMove.push(thisObject)}, 3000);
       console.log(this.lastMove,"this is lastMove")
     },
     blinkFunc(){
