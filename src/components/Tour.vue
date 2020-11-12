@@ -19,6 +19,13 @@ export default {
       steps: [
         {
           target: "#main-game>h3", // We're using document.querySelector() under the hood
+          content: `<strong>เดินตรง กินเฉียง</strong>`,
+          params: {
+            placement: "top"
+          }
+        },
+        {
+          target: "#main-game>h3", // We're using document.querySelector() under the hood
           content: `<strong>หน้ายิ้ม!</strong> เป็นฝ่ายเริ่มก่อน
           โดยให้เดินลงมาข้างล่าง และสามารถคิดการเดินได้เองโดยต้องอยู่ในกฎของเกม`,
           params: {
